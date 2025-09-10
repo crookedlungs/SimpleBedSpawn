@@ -1,0 +1,14 @@
+{
+  "$schema": "https://moddbcdn.vintagestory.at/schema/modinfo.latest.json",
+  "type": "Code",
+  "modid": "simplebedspawn",
+  "name": "SimpleBedSpawn",
+  "authors": [
+    "crookedlungs"
+  ],
+  "description": "Sets your spawnpoint to a bed after you've slept in it.",
+  "version": "1.0.0",
+  "dependencies": {
+    "game": "1.21.0"
+  }
+}
