@@ -1,5 +1,6 @@
 ﻿// using Vintagestory.API.Client;
 using Vintagestory.API.Common;
+using Vintagestory.API.Common.Entities;
 using Vintagestory.API.Config;
 using Vintagestory.API.Server;
 using Vintagestory.GameContent;
@@ -29,6 +30,17 @@ namespace SimpleBedSpawn
             Mod.Logger.Notification("Hello from template mod: " + api.Side);
         }*/
 
+        public static void UpdateSpawnPoint(IServerPlayer p, BlockSelection blockSel)
+        {
+            PlayerSpawnPos tmp = new(blockSel.Position.X, blockSel.Position.Y, blockSel.Position.Z);
+            FuzzyEntityPos tmpCurrent = p.GetSpawnPosition(false);
+            if (tmpCurrent.X != tmp.x && tmpCurrent.Y != tmp.y && tmpCurrent.Z != tmp.z)
+            {
+                p.SetSpawnPosition(tmp);
+                p.SendMessage(GlobalConstants.ServerInfoChatGroup, "Your spawnpoint has been updated! ", EnumChatType.Notification);
+            }
+        }
+
         public override void StartServerSide(ICoreServerAPI api)
         {
             sapi = api;
@@ -50,17 +62,13 @@ namespace SimpleBedSpawn
                 var block = sapi.World.BlockAccessor.GetBlock(blockSel.Position);
                 if (block is BlockBed)
                 {
-                    int X = blockSel.Position.X;
-                    int Y = blockSel.Position.Y;
-                    int Z = blockSel.Position.Z;
-                    p.SetSpawnPosition(new PlayerSpawnPos(X, Y, Z));
-                    p.SendMessage(GlobalConstants.GeneralChatGroup, "Your spawnpoint has been updated! ", EnumChatType.Notification);
+                    UpdateSpawnPoint(p, blockSel);
                 }
             };
 
             sapi.Event.OnEntityDeath += (entity, damage) =>
             {
-                sapi.Logger.Notification("Player was killed.");
+                //sapi.Logger.Notification("Player was killed.");
             };
 
             sapi.Event.DidBreakBlock += (IServerPlayer p, int blockId, BlockSelection blockSel) =>
